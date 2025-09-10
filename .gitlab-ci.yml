@@ -1,7 +1,7 @@
 # define stages
 stages:
   - test:basis
-#  - test:run
+  - test:run
 
 ########################################################################################################################
 # test stages
@@ -21,35 +21,35 @@ test:composer:
     expire_in: 1 hour
 
 # run unit tests
-#test:phpunit:5.6:
-#  stage: test:run
-#  tags:
-#    - docker
-#  dependencies:
-#    - test:composer
-#  image: finalgene/php-cli:5.6
-#  script:
-#    # lint php files
-#    - find src/ -name '*.php' -print0 | xargs -0 php -l
-#    - find tests/ -name '*.php' -print0 | xargs -0 php -l
-#    # run unit tests
-#    - vendor/bin/phpunit --colors=never
+test:phpunit:5.6:
+  stage: test:run
+  tags:
+    - docker
+  dependencies:
+    - test:composer
+  image: finalgene/php-cli:5.6
+  script:
+    # lint php files
+    - find src/ -name '*.php' -print0 | xargs -0 php -l
+    - find tests/ -name '*.php' -print0 | xargs -0 php -l
+    # run unit tests
+    - vendor/bin/phpunit --colors=never
 
 # run unit tests
-#test:phpunit:7.1:
-#  stage: test:run
-#  tags:
-#    - docker
-#  dependencies:
-#    - test:composer
-#  image: finalgene/php-cli:7.1-xdebug
-#  script:
-#    # lint php files
-#    - find src/ -name '*.php' -print0 | xargs -0 php -l
-#    - find tests/ -name '*.php' -print0 | xargs -0 php -l
-#    # run unit tests
-#    - vendor/bin/phpunit --coverage-clover .report/phpunit.coverage.xml --log-junit .report/phpunit.xml --coverage-text --colors=never
-#  artifacts:
-#    paths:
-#      - tests/.report/
-#    expire_in: 1 hour
+test:phpunit:7.4:
+  stage: test:run
+  tags:
+    - docker
+  dependencies:
+    - test:composer
+  image: finalgene/php-cli:7.4
+  script:
+    # lint php files
+    - find src/ -name '*.php' -print0 | xargs -0 php -l
+    - find tests/ -name '*.php' -print0 | xargs -0 php -l
+    # run unit tests
+    - vendor/bin/phpunit --coverage-clover .report/phpunit.coverage.xml --log-junit .report/phpunit.xml --coverage-text --colors=never
+  artifacts:
+    paths:
+      - tests/.report/
+    expire_in: 1 hour
