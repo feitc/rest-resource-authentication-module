@@ -11,7 +11,7 @@ test:composer:
   stage: test:basis
   tags:
     - docker
-  image: finalgene/composer
+  image: ${GLOBAL_DOCKER_COMPOSER_IMAGE}
   script:
     - composer validate --no-check-all --no-check-publish
     - composer install --no-interaction --ignore-platform-reqs
