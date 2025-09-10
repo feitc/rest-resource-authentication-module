@@ -26,12 +26,12 @@
         <server name="HTTP_HOST" value="phpunit.local"/>
     </php>
     <testsuites>
-<!--        <testsuite name="Integration tests">-->
-<!--            <directory>tests/src/Integration</directory>-->
-<!--        </testsuite>-->
-        <testsuite name="Unit tests">
-            <directory>tests/src/Unit</directory>
+        <testsuite name="Integration tests">
+            <directory>tests/src/Integration</directory>
         </testsuite>
+<!--        <testsuite name="Unit tests">-->
+<!--            <directory>tests/src/Unit</directory>-->
+<!--        </testsuite>-->
     </testsuites>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
