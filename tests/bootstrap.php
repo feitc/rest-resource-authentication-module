@@ -16,7 +16,7 @@ function findInitApplication()
     do {
         $intiFile = new \SplFileInfo($path . '/init_application.php');
         if ($intiFile->isReadable()) {
-            /** @noinspection PhpIncludeInspection */
+            /** @noinspection \PhpIncludeInspection */
             return require $intiFile->getPathname();
         }
 

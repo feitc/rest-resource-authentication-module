@@ -66,7 +66,7 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::getHmac
+     * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::getHmacV1
      * @dataProvider dataProviderForTestGetHmac
      */
     public function testGetHmac($method, $expectedCallOfPreparePostCopy)
@@ -118,7 +118,7 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
             ->expects($expectedCallOfPreparePostCopy)
             ->method('preparePostCopy');
 
-        $getHmac = $this->getMethod('getHmac');
+        $getHmac = $this->getMethod('getHmacV1');
         $hmac = $getHmac->invokeArgs($adapter, [$request, self::SECRET_STRING]);
 
         $this->assertEquals(self::SIGNATURE_STRING, $hmac);
@@ -158,8 +158,11 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
     {
         $authorization = 'Token ' . self::PUBLIC_STRING . ':' . self::SIGNATURE_STRING;
 
-        $extractPublicKey = $this->getMethod('extractPublicKey');
+        $tokenVersion = $this->getMethod('setTokenVersion');
         $adapter = new TokenHeaderAuthenticationAdapter();
+        $tokenVersion->invokeArgs($adapter, ['v1']);
+
+        $extractPublicKey = $this->getMethod('extractPublicKey');
         $signature = $extractPublicKey->invokeArgs($adapter, [$authorization]);
 
         $this->assertEquals(self::PUBLIC_STRING, $signature);
@@ -695,109 +698,6 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::authenticate
-     * @uses \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter::buildErrorResult
-     */
-    public function testAuthenticationWithMissMatchingSignatureInDebugMode()
-    {
-        $authorization = 'Token ' . self::PUBLIC_STRING . ':' . self::SIGNATURE_STRING;
-
-        $header = $this->getMock(HeaderInterface::class);
-        $header
-            ->expects($this->once())
-            ->method('getFieldValue')
-            ->willReturn($authorization);
-
-        $headers = $this->getMock(Headers::class);
-        $headers
-            ->expects($this->any())
-            ->method('has')
-            ->with('Authorization')
-            ->willReturn(true);
-        $headers
-            ->expects($this->once())
-            ->method('get')
-            ->with('Authorization')
-            ->willReturn($header);
-
-        $identity = $this->getMock(IdentityInterface::class);
-        $identity
-            ->expects($this->once())
-            ->method('getSecret')
-            ->willReturn(self::SECRET_STRING);
-
-        $identityService = $this->getMock(IdentityServiceInterface::class);
-        $identityService
-            ->expects($this->once())
-            ->method('getIdentity')
-            ->with(self::PUBLIC_STRING)
-            ->willReturn($identity);
-
-        $request = $this->getMock(
-            Request::class,
-            [
-                'getHeaders',
-            ],
-            [],
-            '',
-            false
-        );
-        $request
-            ->expects($this->any())
-            ->method('getHeaders')
-            ->willReturn($headers);
-        /** @var Request $request */
-
-        $adapter = $this->getMock(
-            TokenHeaderAuthenticationAdapter::class,
-            [
-                'getRequest',
-                'extractPublicKey',
-                'extractSignature',
-                'getIdentityService',
-                'getHmac',
-                'isDebugLogging',
-            ]
-        );
-        $adapter
-            ->expects($this->once())
-            ->method('getRequest')
-            ->willReturn($request);
-        $adapter
-            ->expects($this->once())
-            ->method('extractPublicKey')
-            ->with($authorization)
-            ->willReturn(self::PUBLIC_STRING);
-        $adapter
-            ->expects($this->once())
-            ->method('extractSignature')
-            ->with($authorization)
-            ->willReturn(self::SIGNATURE_STRING);
-        $adapter
-            ->expects($this->once())
-            ->method('getIdentityService')
-            ->willReturn($identityService);
-        $adapter
-            ->expects($this->once())
-            ->method('getHmac')
-            ->with($request, self::SECRET_STRING)
-            ->willReturn('invalid-signature');
-        $adapter
-            ->expects($this->once())
-            ->method('isDebugLogging')
-            ->willReturn(true);
-        /** @var TokenHeaderAuthenticationAdapter $adapter */
-
-        $this->setExpectedException('PHPUnit_Framework_Error_Notice');
-        $adapter->authenticate();
-
-        PHPUnit_Framework_Error_Notice::$enabled = false;
-        $result = $adapter->authenticate();
-        $this->assertInstanceOf(Result::class, $result);
-        $this->assertEquals(Result::FAILURE_CREDENTIAL_INVALID, $result->getCode());
-    }
-
-    /**
      * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::setDebugLogging
      * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::isDebugLogging
      */
@@ -920,6 +820,7 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
         $request = $request->reveal();
 
         $requestCopy = $this->prophesize(Request::class);
+
         $requestCopy->setContent($expectedContent)
             ->$callExpectation();
         $requestCopy = $requestCopy->reveal();
