@@ -10,7 +10,6 @@ namespace FinalGene\RestResourceAuthenticationModuleTest\Unit\Http;
 
 use FinalGene\RestResourceAuthenticationModule\Http\Request;
 use Zend\Test\Util\ModuleLoader;
-use Zend\Console\Console;
 use Zend\Console\Request as ConsoleRequest;
 
 /**
@@ -30,7 +29,7 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        /* @noinspection PhpIncludeInspection */
+        /* @noinspection \PhpIncludeInspection */
         $moduleLoader = new ModuleLoader([
             'modules' => [
                 'ZF\ApiProblem',
