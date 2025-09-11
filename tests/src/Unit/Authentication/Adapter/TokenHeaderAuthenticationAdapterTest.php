@@ -66,7 +66,7 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::getHmac
+     * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::getHmacV1
      * @dataProvider dataProviderForTestGetHmac
      */
     public function testGetHmac($method, $expectedCallOfPreparePostCopy)
@@ -118,7 +118,7 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
             ->expects($expectedCallOfPreparePostCopy)
             ->method('preparePostCopy');
 
-        $getHmac = $this->getMethod('getHmac');
+        $getHmac = $this->getMethod('getHmacV1');
         $hmac = $getHmac->invokeArgs($adapter, [$request, self::SECRET_STRING]);
 
         $this->assertEquals(self::SIGNATURE_STRING, $hmac);
@@ -173,8 +173,11 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
     {
         $authorization = 'Token ' . self::PUBLIC_STRING;
 
-        $extractPublicKey = $this->getMethod('extractPublicKey');
+        $tokenVersion = $this->getMethod('setTokenVersion');
         $adapter = new TokenHeaderAuthenticationAdapter();
+        $tokenVersion->invokeArgs($adapter, ['v1']);        
+        
+        $extractPublicKey = $this->getMethod('extractPublicKey');
         $extractPublicKey->invokeArgs($adapter, [$authorization]);
     }
 
