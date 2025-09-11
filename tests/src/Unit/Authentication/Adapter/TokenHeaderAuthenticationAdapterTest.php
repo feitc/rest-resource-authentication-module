@@ -158,8 +158,11 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
     {
         $authorization = 'Token ' . self::PUBLIC_STRING . ':' . self::SIGNATURE_STRING;
 
-        $extractPublicKey = $this->getMethod('extractPublicKey');
+        $tokenVersion = $this->getMethod('setTokenVersion');
         $adapter = new TokenHeaderAuthenticationAdapter();
+        $tokenVersion->invokeArgs($adapter, ['v1']);
+
+        $extractPublicKey = $this->getMethod('extractPublicKey');
         $signature = $extractPublicKey->invokeArgs($adapter, [$authorization]);
 
         $this->assertEquals(self::PUBLIC_STRING, $signature);
@@ -173,11 +176,8 @@ class TokenHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
     {
         $authorization = 'Token ' . self::PUBLIC_STRING;
 
-        $tokenVersion = $this->getMethod('setTokenVersion');
-        $adapter = new TokenHeaderAuthenticationAdapter();
-        $tokenVersion->invokeArgs($adapter, ['v1']);        
-        
         $extractPublicKey = $this->getMethod('extractPublicKey');
+        $adapter = new TokenHeaderAuthenticationAdapter();
         $extractPublicKey->invokeArgs($adapter, [$authorization]);
     }
 
