@@ -10,8 +10,8 @@ namespace FinalGene\RestResourceAuthenticationModule\ServiceManager;
 
 use FinalGene\RestResourceAuthenticationModule\Rest\AuthenticatedResourceListener;
 use FinalGene\RestResourceAuthenticationModule\Service\AuthenticationService;
-use Zend\ServiceManager\InitializerInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Laminas\ServiceManager\InitializerInterface;
+use Laminas\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Class AuthenticationServiceInitializer

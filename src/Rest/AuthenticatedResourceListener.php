@@ -11,11 +11,11 @@ namespace FinalGene\RestResourceAuthenticationModule\Rest;
 use FinalGene\RestResourceAuthenticationModule\Authentication\IdentityInterface;
 use FinalGene\RestResourceAuthenticationModule\Exception\AuthenticationException;
 use FinalGene\RestResourceAuthenticationModule\Exception\PermissionException;
-use Zend\EventManager\EventManagerInterface;
-use ZF\ApiProblem\ApiProblem;
-use ZF\ApiProblem\ApiProblemResponse;
-use ZF\Rest\AbstractResourceListener;
-use ZF\Rest\ResourceEvent;
+use Laminas\EventManager\EventManagerInterface;
+use Laminas\ApiTools\ApiProblem\ApiProblem;
+use Laminas\ApiTools\ApiProblem\ApiProblemResponse;
+use Laminas\ApiTools\Rest\AbstractResourceListener;
+use Laminas\ApiTools\Rest\ResourceEvent;
 use FinalGene\RestResourceAuthenticationModule\Service\AuthenticationService;
 
 /**

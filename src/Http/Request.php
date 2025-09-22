@@ -9,8 +9,8 @@
 namespace FinalGene\RestResourceAuthenticationModule\Http;
 
 use League\Uri\QueryParser;
-use Zend\Http\PhpEnvironment\Request as BaseRequest;
-use Zend\Stdlib\Parameters;
+use Laminas\Http\PhpEnvironment\Request as BaseRequest;
+use Laminas\Stdlib\Parameters;
 
 /**
  * Class Request

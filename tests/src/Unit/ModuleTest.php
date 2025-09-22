@@ -9,7 +9,7 @@
 namespace FinalGene\RestResourceAuthenticationModuleTest\Unit;
 
 use FinalGene\RestResourceAuthenticationModule\Module;
-use Zend\ModuleManager\Feature\ConfigProviderInterface;
+use Laminas\ModuleManager\Feature\ConfigProviderInterface;
 
 /**
  * Class ModuleTest
@@ -48,8 +48,8 @@ class ModuleTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInternalType('array', $dependencies);
 
-        $this->assertContains('ZF\ApiProblem', $dependencies);
-        $this->assertContains('ZF\Rest', $dependencies);
+        $this->assertContains('Laminas\ApiTools\ApiProblem', $dependencies);
+        $this->assertContains('Laminas\ApiTools\Rest', $dependencies);
     }
 
     /**
