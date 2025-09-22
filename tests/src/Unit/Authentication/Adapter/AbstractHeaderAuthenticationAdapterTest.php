@@ -9,8 +9,8 @@
 namespace FinalGene\RestResourceAuthenticationModuleTest\Unit\Authentication\Adapter;
 
 use FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter;
-use Zend\Authentication\Result;
-use Zend\Http\Request;
+use Laminas\Authentication\Result;
+use Laminas\Http\Request;
 
 /**
  * Class AbstractHeaderAuthenticationAdapterTest

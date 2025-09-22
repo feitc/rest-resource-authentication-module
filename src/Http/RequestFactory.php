@@ -8,10 +8,10 @@
 
 namespace FinalGene\RestResourceAuthenticationModule\Http;
 
-use Zend\Console\Console;
-use Zend\Console\Request as ConsoleRequest;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Laminas\Console\Console;
+use Laminas\Console\Request as ConsoleRequest;
+use Laminas\ServiceManager\FactoryInterface;
+use Laminas\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Class RequestFactory

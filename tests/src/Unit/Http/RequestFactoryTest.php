@@ -9,8 +9,8 @@
 namespace FinalGene\RestResourceAuthenticationModuleTest\Unit\Http;
 
 use FinalGene\RestResourceAuthenticationModule\Http\Request;
-use Zend\Test\Util\ModuleLoader;
-use Zend\Console\Request as ConsoleRequest;
+use Laminas\Test\Util\ModuleLoader;
+use Laminas\Console\Request as ConsoleRequest;
 
 /**
  * Class RequestFactoryTest
@@ -20,7 +20,7 @@ use Zend\Console\Request as ConsoleRequest;
 class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Zend\ServiceManager\ServiceManager
+     * @var \Laminas\ServiceManager\ServiceManager
      */
     protected $serviceManager;
 
@@ -32,8 +32,8 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
         /* @noinspection \PhpIncludeInspection */
         $moduleLoader = new ModuleLoader([
             'modules' => [
-                'ZF\ApiProblem',
-                'ZF\Rest',
+                'Laminas\ApiTools\ApiProblem',
+                'Laminas\ApiTools\Rest',
                 'FinalGene\RestResourceAuthenticationModule',
             ],
             'module_listener_options' => [
@@ -45,7 +45,7 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
     /**
      * Get the service manager
      *
-     * @return \Zend\ServiceManager\ServiceManager
+     * @return \Laminas\ServiceManager\ServiceManager
      */
     protected function getServiceManager()
     {

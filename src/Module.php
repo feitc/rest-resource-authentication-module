@@ -8,8 +8,8 @@
 
 namespace FinalGene\RestResourceAuthenticationModule;
 
-use Zend\ModuleManager\Feature\ConfigProviderInterface;
-use Zend\ModuleManager\Feature\DependencyIndicatorInterface;
+use Laminas\ModuleManager\Feature\ConfigProviderInterface;
+use Laminas\ModuleManager\Feature\DependencyIndicatorInterface;
 
 /**
  * Module
@@ -63,8 +63,8 @@ class Module implements ConfigProviderInterface, DependencyIndicatorInterface
     public function getModuleDependencies()
     {
         return [
-            'ZF\ApiProblem',
-            'ZF\Rest',
+            'Laminas\ApiTools\ApiProblem',
+            'Laminas\ApiTools\Rest',
         ];
     }
 }

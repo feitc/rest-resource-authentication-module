@@ -13,9 +13,9 @@ use FinalGene\RestResourceAuthenticationModule\Exception\AuthenticationException
 use FinalGene\RestResourceAuthenticationModule\Exception\PermissionException;
 use FinalGene\RestResourceAuthenticationModule\Rest\AuthenticatedResourceListener;
 use FinalGene\RestResourceAuthenticationModule\Service\AuthenticationService;
-use Zend\EventManager\EventManagerInterface;
-use ZF\ApiProblem\ApiProblemResponse;
-use ZF\Rest\ResourceEvent;
+use Laminas\EventManager\EventManagerInterface;
+use Laminas\ApiTools\ApiProblem\ApiProblemResponse;
+use Laminas\ApiTools\Rest\ResourceEvent;
 
 /**
  * Class AuthenticatedResourceListenerTest

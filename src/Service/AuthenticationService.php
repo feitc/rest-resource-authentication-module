@@ -9,8 +9,8 @@
 namespace FinalGene\RestResourceAuthenticationModule\Service;
 
 use FinalGene\RestResourceAuthenticationModule\Exception\AuthenticationException;
-use Zend\Authentication\Adapter\AdapterInterface;
-use ZF\MvcAuth\Identity\IdentityInterface;
+use Laminas\Authentication\Adapter\AdapterInterface;
+use Laminas\ApiTools\MvcAuth\Identity\IdentityInterface;
 
 /**
  * Class AuthenticationService

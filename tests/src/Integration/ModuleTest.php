@@ -8,7 +8,7 @@
 
 namespace FinalGene\RestResourceAuthenticationModuleTest\Integration;
 
-use Zend\Test\Util\ModuleLoader;
+use Laminas\Test\Util\ModuleLoader;
 
 /**
  * Module test
@@ -31,8 +31,8 @@ class ModuleTest extends \PHPUnit_Framework_TestCase
     {
         $this->moduleLoader = new ModuleLoader([
             'modules' => [
-                'ZF\ApiProblem',
-                'ZF\Rest',
+                'Laminas\ApiTools\ApiProblem',
+                'Laminas\ApiTools\Rest',
                 'FinalGene\RestResourceAuthenticationModule',
             ],
             'module_listener_options' => [],
@@ -44,7 +44,7 @@ class ModuleTest extends \PHPUnit_Framework_TestCase
      */
     public function testModuleIsLoadable()
     {
-        /** @var \Zend\ModuleManager\ModuleManager $moduleManager */
+        /** @var \Laminas\ModuleManager\ModuleManager $moduleManager */
         $moduleManager = $this->moduleLoader->getModuleManager();
 
         $this->assertNotNull(

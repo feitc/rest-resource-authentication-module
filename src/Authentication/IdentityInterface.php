@@ -9,7 +9,7 @@
 namespace FinalGene\RestResourceAuthenticationModule\Authentication;
 
 use FinalGene\RestResourceAuthenticationModule\Exception\PermissionException;
-use ZF\Rest\ResourceEvent;
+use Laminas\ApiTools\Rest\ResourceEvent;
 
 /**
  * Class IdentityInterface

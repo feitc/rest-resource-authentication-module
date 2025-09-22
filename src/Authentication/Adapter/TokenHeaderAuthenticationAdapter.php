@@ -13,9 +13,9 @@ use FinalGene\RestResourceAuthenticationModule\Exception\TokenException;
 use FinalGene\RestResourceAuthenticationModule\Exception\IdentityNotFoundException;
 use FinalGene\RestResourceAuthenticationModule\Service\IdentityServiceInterface;
 use phpDocumentor\Reflection\Types\This;
-use Zend\Authentication\Result;
-use Zend\Http\Header\ContentType;
-use Zend\Http\Request;
+use Laminas\Authentication\Result;
+use Laminas\Http\Header\ContentType;
+use Laminas\Http\Request;
 
 /**
  * Class TokenHeaderAuthenticationAdapter

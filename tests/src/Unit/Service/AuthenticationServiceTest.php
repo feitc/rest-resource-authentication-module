@@ -10,8 +10,8 @@ namespace FinalGene\RestResourceAuthenticationModuleTest\Unit\Service;
 
 use FinalGene\RestResourceAuthenticationModule\Authentication\IdentityInterface;
 use FinalGene\RestResourceAuthenticationModule\Service\AuthenticationService;
-use Zend\Authentication\Adapter\AdapterInterface;
-use Zend\Authentication\Result;
+use Laminas\Authentication\Adapter\AdapterInterface;
+use Laminas\Authentication\Result;
 
 /**
  * Class AuthenticationServiceTest

@@ -14,11 +14,11 @@ use FinalGene\RestResourceAuthenticationModule\Exception\IdentityNotFoundExcepti
 use FinalGene\RestResourceAuthenticationModule\Exception\TokenException;
 use FinalGene\RestResourceAuthenticationModule\Service\IdentityServiceInterface;
 use Prophecy\Argument;
-use Zend\Authentication\Result;
-use Zend\Http\Header\ContentType;
-use Zend\Http\Header\HeaderInterface;
-use Zend\Http\Headers;
-use Zend\Http\Request;
+use Laminas\Authentication\Result;
+use Laminas\Http\Header\ContentType;
+use Laminas\Http\Header\HeaderInterface;
+use Laminas\Http\Headers;
+use Laminas\Http\Request;
 
 /**
  * Class TokenHeaderAuthenticationAdapterTest
