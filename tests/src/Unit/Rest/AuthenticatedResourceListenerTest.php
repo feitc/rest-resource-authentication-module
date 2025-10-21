@@ -2,8 +2,12 @@
 /**
  * Authenticated resource listener test file
  *
- * @copyright Copyright (c) 2016, final gene <info@final-gene.de>
- * @author    Frank Giesecke <frank.giesecke@final-gene.de>
+ * @copyright       Copyright (c) 2016, final gene <info@final-gene.de>
+ * @author          Frank Giesecke <frank.giesecke@final-gene.de>
+ *
+ * @copyright       (c)2025 Frank Emmrich IT-Consulting!
+ * @author          Frank Emmrich <kontakt@frank-emmrich.de>
+ * @link            https://www.frank-emmrich.de
  */
 
 namespace FinalGene\RestResourceAuthenticationModuleTest\Unit\Rest;
@@ -13,27 +17,25 @@ use FinalGene\RestResourceAuthenticationModule\Exception\AuthenticationException
 use FinalGene\RestResourceAuthenticationModule\Exception\PermissionException;
 use FinalGene\RestResourceAuthenticationModule\Rest\AuthenticatedResourceListener;
 use FinalGene\RestResourceAuthenticationModule\Service\AuthenticationService;
-use Laminas\EventManager\EventManagerInterface;
 use Laminas\ApiTools\ApiProblem\ApiProblemResponse;
 use Laminas\ApiTools\Rest\ResourceEvent;
+use Laminas\EventManager\EventManagerInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class AuthenticatedResourceListenerTest
  *
  * @package FinalGene\RestResourceAuthenticationModuleTest\Unit\Rest
  */
-class AuthenticatedResourceListenerTest extends \PHPUnit_Framework_TestCase
-{
+class AuthenticatedResourceListenerTest extends TestCase {
     /**
-     * @covers FinalGene\RestResourceAuthenticationModule\Rest\AuthenticatedResourceListener::setAuthenticationService
-     * @covers FinalGene\RestResourceAuthenticationModule\Rest\AuthenticatedResourceListener::getAuthenticationService
+     * @covers \FinalGene\RestResourceAuthenticationModule\Rest\AuthenticatedResourceListener::setAuthenticationService
      */
-    public function testSetAndGetAuthenticationService()
-    {
+    public function testSetAndGetAuthenticationService() {
         $listener = $this->getMockForAbstractClass(AuthenticatedResourceListener::class);
         /** @var AuthenticatedResourceListener $listener */
 
-        $expected = $this->getMock(AuthenticationService::class, [], [], '', false);
+        $expected = $this->createMock(AuthenticationService::class);
         /** @var AuthenticationService $expected */
 
         $listener->setAuthenticationService($expected);
@@ -41,48 +43,79 @@ class AuthenticatedResourceListenerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers FinalGene\RestResourceAuthenticationModule\Rest\AuthenticatedResourceListener::attach
+     * @covers \FinalGene\RestResourceAuthenticationModule\Rest\AuthenticatedResourceListener::attach
      */
-    public function testAttach()
-    {
-        $eventManager = $this->getMock(EventManagerInterface::class, [], [], '', false);
-        $listener = $this->getMockForAbstractClass(AuthenticatedResourceListener::class);
+    public function testAttach() {
+        $listener = $this->createMock(AuthenticatedResourceListener::class);
 
+        $expectations =  [
+            ['create', [$listener, 'authenticate'], 10],
+            ['delete', [$listener, 'authenticate'], 10],
+            ['deleteList', [$listener, 'authenticate'], 10],
+            ['fetch', [$listener, 'authenticate'], 10],
+            ['fetchAll', [$listener, 'authenticate'], 10],
+            ['patch', [$listener, 'authenticate'], 10],
+            ['patchList', [$listener, 'authenticate'], 10],
+            ['replaceList', [$listener, 'authenticate'], 10],
+            ['update', [$listener, 'authenticate'], 10]
+        ];
+        $invokedCount = self::exactly(count($expectations));
+
+        $eventManager = $this->createMock(EventManagerInterface::class);
+        // TODO: Fehlerbehebung der Methode 'willReturnCallback()' eines Mocks in PHPUnit
+        // Beim Einkommentieren von '$eventManager->expects($invokedCount)' kommt der Fehler, dass
+        // 'attach' 9-mal ausgeführt werden soll, aber 0-mal ausgeführt wurde. Dieser Fehler existierte
+        // bereits im ehemaligen Aufruf von Frank Giesecke mit '$eventManager->withConsecutive()' - siehe
+        // unten. Er wird sichtbar, wenn man '$eventManager->expects($this->exactly(9)) setzt.
         $eventManager
-            ->expects($this->any())
+//             ->expects($invokedCount)
             ->method('attach')
-            ->withConsecutive(
-                ['create', [$listener, 'authenticate'], 10],
-                ['delete', [$listener, 'authenticate'], 10],
-                ['deleteList', [$listener, 'authenticate'], 10],
-                ['fetch', [$listener, 'authenticate'], 10],
-                ['fetchAll', [$listener, 'authenticate'], 10],
-                ['patch', [$listener, 'authenticate'], 10],
-                ['patchList', [$listener, 'authenticate'], 10],
-                ['replaceList', [$listener, 'authenticate'], 10],
-                ['update', [$listener, 'authenticate'], 10]
-            );
-        /** @var EventManagerInterface $eventManager */
+            ->willReturnCallback(function($parameters) use ($invokedCount, $expectations) {
+                $currentInvocationCount = $invokedCount->getInvocationCount();
+                // TODO: Ab PHPUnit 10 obige mit folgender Zeile ersetzen:
+                // $currentInvocationCount = $invokedCount->numberOfInvocations();
 
-        /** @var AuthenticatedResourceListener $listener */
+                $currentExpectation = $expectations[$currentInvocationCount - 1];
+
+                $this->assertSame($currentExpectation[0], $parameters);
+                return $currentExpectation[1];
+            });
+
+        // Ursprüngliche Version von Frank Giesecke mit '$eventManager->withConsecutive':
+
+//        $eventManager = $this->createMock(EventManagerInterface::class);
+//        $eventManager
+//            ->expects($this->any())
+//            ->method('attach')
+//            ->withConsecutive(
+//                ['create', [$listener, 'authenticate'], 10],
+//                ['delete', [$listener, 'authenticate'], 10],
+//                ['deleteList', [$listener, 'authenticate'], 10],
+//                ['fetch', [$listener, 'authenticate'], 10],
+//                ['fetchAll', [$listener, 'authenticate'], 10],
+//                ['patch', [$listener, 'authenticate'], 10],
+//                ['patchList', [$listener, 'authenticate'], 10],
+//                ['replaceList', [$listener, 'authenticate'], 10],
+//                ['update', [$listener, 'authenticate'], 10]
+//            );
+
         $listener->attach($eventManager);
         $this->assertTrue(true);
     }
 
     /**
-     * @covers FinalGene\RestResourceAuthenticationModule\Rest\AuthenticatedResourceListener::authenticate
+     * @covers \FinalGene\RestResourceAuthenticationModule\Rest\AuthenticatedResourceListener::authenticate
      */
-    public function testSuccessfulAuthentication()
-    {
-        $identity = $this->getMock(IdentityInterface::class);
+    public function testSuccessfulAuthentication() {
+        $identity = $this->createMock(IdentityInterface::class);
 
-        $service = $this->getMock(AuthenticationService::class, [], [], '', false);
+        $service = $this->createMock(AuthenticationService::class);
         $service
             ->expects($this->once())
             ->method('authenticate')
             ->willReturn($identity);
 
-        $event = $this->getMock(ResourceEvent::class, [], [], '', false);
+        $event = $this->createMock(ResourceEvent::class);
         /** @var ResourceEvent $event */
 
         $listener = $this->getMockForAbstractClass(
@@ -106,24 +139,23 @@ class AuthenticatedResourceListenerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers FinalGene\RestResourceAuthenticationModule\Rest\AuthenticatedResourceListener::authenticate
+     * @covers \FinalGene\RestResourceAuthenticationModule\Rest\AuthenticatedResourceListener::authenticate
      */
-    public function testAuthenticationFetchingAuthenticationException()
-    {
-        $exception = $this->getMock(AuthenticationException::class);
+    public function testAuthenticationFetchingAuthenticationException() {
+        $exception = $this->createMock(AuthenticationException::class);
         $exception
             ->expects($this->once())
             ->method('getAuthenticationMessages')
             ->willReturn(['']);
         /** @var AuthenticationException $exception */
 
-        $service = $this->getMock(AuthenticationService::class, [], [], '', false);
+        $service = $this->createMock(AuthenticationService::class);
         $service
             ->expects($this->once())
             ->method('authenticate')
             ->willThrowException($exception);
 
-        $event = $this->getMock(ResourceEvent::class, [], [], '', false);
+        $event = $this->createMock(ResourceEvent::class);
         /** @var ResourceEvent $event */
 
         $listener = $this->getMockForAbstractClass(
@@ -147,24 +179,23 @@ class AuthenticatedResourceListenerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers FinalGene\RestResourceAuthenticationModule\Rest\AuthenticatedResourceListener::authenticate
+     * @covers \FinalGene\RestResourceAuthenticationModule\Rest\AuthenticatedResourceListener::authenticate
      */
-    public function testAuthenticationFetchingPermissionException()
-    {
-        $exception = $this->getMock(PermissionException::class);
+    public function testAuthenticationFetchingPermissionException() {
+        $exception = $this->createMock(PermissionException::class);
         /** @var PermissionException $exception */
 
-        $event = $this->getMock(ResourceEvent::class, [], [], '', false);
+        $event = $this->createMock(ResourceEvent::class);
         /** @var ResourceEvent $event */
 
-        $identity = $this->getMock(IdentityInterface::class);
+        $identity = $this->createMock(IdentityInterface::class);
         $identity
             ->expects($this->once())
             ->method('checkPermission')
             ->with($event)
             ->willThrowException($exception);
 
-        $service = $this->getMock(AuthenticationService::class, [], [], '', false);
+        $service = $this->createMock(AuthenticationService::class);
         $service
             ->expects($this->once())
             ->method('authenticate')

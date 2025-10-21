@@ -14,7 +14,7 @@ test:composer:
   image: ${GLOBAL_DOCKER_COMPOSER_IMAGE}
   script:
     - composer validate --no-check-all --no-check-publish
-    - composer install --no-interaction --ignore-platform-reqs
+    - composer install --no-interaction
   artifacts:
     paths:
       - vendor/
@@ -28,6 +28,8 @@ test:phpunit:7.4:
   dependencies:
     - test:composer
   image: finalgene/php-cli:7.4
+  variables:
+    XDEBUG_ENABLE: 1
   script:
     # lint php files
     - find src/ -name '*.php' -print0 | xargs -0 php -l

@@ -7,3 +7,4 @@
 .idea/scopes
 vendor/
 composer.lock
+/.idea/php-test-framework.xml

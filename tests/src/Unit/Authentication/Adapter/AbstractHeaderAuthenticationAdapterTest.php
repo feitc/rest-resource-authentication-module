@@ -2,8 +2,12 @@
 /**
  * rest-resource-authentication-module
  *
- * @copyright Copyright (c) 2016, final gene <info@final-gene.de>
- * @author    Frank Giesecke <frank.giesecke@final-gene.de>
+ * @copyright       Copyright (c) 2016, final gene <info@final-gene.de>
+ * @author          Frank Giesecke <frank.giesecke@final-gene.de>
+ *
+ * @copyright       (c)2025 Frank Emmrich IT-Consulting!
+ * @author          Frank Emmrich <kontakt@frank-emmrich.de>
+ * @link            https://www.frank-emmrich.de
  */
 
 namespace FinalGene\RestResourceAuthenticationModuleTest\Unit\Authentication\Adapter;
@@ -11,21 +15,21 @@ namespace FinalGene\RestResourceAuthenticationModuleTest\Unit\Authentication\Ada
 use FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter;
 use Laminas\Authentication\Result;
 use Laminas\Http\Request;
+use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use ReflectionException;
 
 /**
  * Class AbstractHeaderAuthenticationAdapterTest
  *
  * @package FinalGene\RestResourceAuthenticationModuleTest\Unit\Authentication\Adapter
  */
-class AbstractHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCase
-{
+class AbstractHeaderAuthenticationAdapterTest extends TestCase {
     /**
-     * @covers FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter::setRequest
-     * @covers FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter::getRequest
+     * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter::setRequest
      */
-    public function testSetAndGetRequest()
-    {
-        $expected = $this->getMock(Request::class);
+    public function testSetAndGetRequest() {
+        $expected = $this->createMock(Request::class);
         /** @var Request $expected */
 
         $adapter = $this->getMockForAbstractClass(AbstractHeaderAuthenticationAdapter::class);
@@ -36,27 +40,26 @@ class AbstractHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCas
     }
 
     /**
-     * @covers FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter::authenticate
-     * @uses FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter::buildErrorResult
+     * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter::authenticate
+     * @uses AbstractHeaderAuthenticationAdapter::buildErrorResult
      */
-    public function testAuthenticate()
-    {
+    public function testAuthenticate() {
         $resultMock = $this->getMockBuilder(Result::class)
-            ->setMethods([
+            ->onlyMethods([
                 'getCode'
             ])
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+            ->getMock();
         $resultMock
             ->expects($this->once())
             ->method('getCode')
             ->willReturn(Result::FAILURE_UNCATEGORIZED);
 
         $adapter = $this->getMockBuilder(AbstractHeaderAuthenticationAdapter::class)
-            ->setMethods([
+            ->onlyMethods([
                 'buildErrorResult'
             ])
-            ->getMockForAbstractClass();
+            ->getMock();
         $adapter
             ->expects($this->once())
             ->method('buildErrorResult')
@@ -70,11 +73,13 @@ class AbstractHeaderAuthenticationAdapterTest extends \PHPUnit_Framework_TestCas
     }
 
     /**
-     * @covers FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter::buildErrorResult
+     * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter::buildErrorResult
+     *
+     * @return void
+     * @throws ReflectionException
      */
-    public function testBuildErrorResult()
-    {
-        $reflection = new \ReflectionClass(AbstractHeaderAuthenticationAdapter::class);
+    public function testBuildErrorResult() {
+        $reflection = new ReflectionClass(AbstractHeaderAuthenticationAdapter::class);
         $buildErrorResult = $reflection->getMethod('buildErrorResult');
         $buildErrorResult->setAccessible(true);
 

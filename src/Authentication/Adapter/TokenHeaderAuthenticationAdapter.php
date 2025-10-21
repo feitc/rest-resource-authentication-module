@@ -2,17 +2,18 @@
 /**
  * Abstarct header authentication adapter file
  *
- * @copyright Copyright (c) 2023 final gene; Frank Emmrich IT-Consulting!
- * @author    Frank Giesecke <frank.giesecke@final-gene.de>
- * @author    Frank Emmrich <emmrich@frank-emmrich.de>
- */
+ * @copyright       Copyright (c) 2023 final gene; Frank Emmrich IT-Consulting!
+ * @author          Frank Giesecke <frank.giesecke@final-gene.de>
+ *
+ * @copyright       (c)2025 Frank Emmrich IT-Consulting!
+ * @author          Frank Emmrich <kontakt@frank-emmrich.de>
+ * @link            https://www.frank-emmrich.de */
 
 namespace FinalGene\RestResourceAuthenticationModule\Authentication\Adapter;
 
-use FinalGene\RestResourceAuthenticationModule\Exception\TokenException;
 use FinalGene\RestResourceAuthenticationModule\Exception\IdentityNotFoundException;
+use FinalGene\RestResourceAuthenticationModule\Exception\TokenException;
 use FinalGene\RestResourceAuthenticationModule\Service\IdentityServiceInterface;
-use phpDocumentor\Reflection\Types\This;
 use Laminas\Authentication\Result;
 use Laminas\Http\Header\ContentType;
 use Laminas\Http\Request;
@@ -38,7 +39,7 @@ class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapt
     /**
      * @var IdentityServiceInterface
      */
-    private $identityService;
+    private IdentityServiceInterface $identityService;
 
     /**
      * @var bool
@@ -57,8 +58,7 @@ class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapt
      *
      * @return IdentityServiceInterface
      */
-    public function getIdentityService()
-    {
+    public function getIdentityService(): IdentityServiceInterface {
         return $this->identityService;
     }
 
@@ -66,8 +66,7 @@ class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapt
      * @param IdentityServiceInterface $identityService
      * @return TokenHeaderAuthenticationAdapter
      */
-    public function setIdentityService(IdentityServiceInterface $identityService)
-    {
+    public function setIdentityService(IdentityServiceInterface $identityService): TokenHeaderAuthenticationAdapter {
         $this->identityService = $identityService;
         return $this;
     }
@@ -78,8 +77,7 @@ class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapt
      * @return Result
      * @throws TokenException
      */
-    public function authenticate()
-    {
+    public function authenticate(): Result {
         $request = $this->getRequest();
         $header = $request->getHeaders();
 
@@ -111,7 +109,7 @@ class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapt
      * @return Result
      * @throws TokenException
      */
-    protected function authenticateToken($request, $authorization) {
+    protected function authenticateToken(Request $request, string $authorization): Result {
         try {
             $publicKey = $this->extractPublicKey($authorization);
             $signature = $this->extractSignature($authorization);
@@ -127,7 +125,7 @@ class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapt
         $hmac = $this->getHmac($request, $identity->getSecret());
         if ($hmac !== $signature) {
             if ($this->isDebugLogging()) {
-                trigger_error(sprintf('Signature for identity `%s`: %s', $publicKey, $hmac), E_USER_NOTICE);
+                trigger_error(sprintf('Signature for identity `%s`: %s', $publicKey, $hmac));
             }
             return $this->buildErrorResult('Signature does not match', Result::FAILURE_CREDENTIAL_INVALID);
         }
@@ -143,8 +141,7 @@ class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapt
      * @return string
      * @throws TokenException
      */
-    protected function extractPublicKey($authorization)
-    {
+    protected function extractPublicKey($authorization): string {
         if($this->getTokenVersion() === 'v1') {
             $identifierLength = strlen(self::AUTH_IDENTIFIER) + 1;
         }
@@ -174,8 +171,7 @@ class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapt
      * @return string
      * @throws TokenException
      */
-    protected function extractSignature($authorization)
-    {
+    protected function extractSignature($authorization): string {
         $signatureStart = strpos($authorization, ':');
         if (false === $signatureStart) {
             throw new TokenException(
@@ -195,7 +191,7 @@ class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapt
      * @return string
      * @throws TokenException
      */
-    protected function getHmac(Request $request, $secret) {
+    protected function getHmac(Request $request, string $secret): string {
         if($this->getTokenVersion() === 'v1') {
             return $this->getHmacV1($request, $secret);
         }
@@ -211,7 +207,7 @@ class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapt
      *
      * @return string
      */
-    protected function getHmacV1(Request $request, $secret) {
+    protected function getHmacV1(Request $request, string $secret): string {
         // Remove headers to build valid signature
         $headerCopy = clone $request->getHeaders();
         $headerCopy->clearHeaders();
@@ -234,7 +230,7 @@ class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapt
      * @return string
      * @throws TokenException
      */
-    protected function getHmacV2(Request $request, $secret) {
+    protected function getHmacV2(Request $request, string $secret): string {
         $requestCopy = clone $request;
 
         $headerTimestamp = $requestCopy->getHeaders()->get(self::TIMESTAMP_HEADER)->getFieldValue();
@@ -261,8 +257,7 @@ class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapt
      *
      * @return boolean
      */
-    public function isDebugLogging()
-    {
+    public function isDebugLogging(): bool {
         return $this->debugLogging;
     }
 
@@ -270,8 +265,7 @@ class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapt
      * @param boolean $debugLogging
      * @return TokenHeaderAuthenticationAdapter
      */
-    public function setDebugLogging($debugLogging)
-    {
+    public function setDebugLogging(bool $debugLogging): TokenHeaderAuthenticationAdapter {
         $this->debugLogging = filter_var($debugLogging, FILTER_VALIDATE_BOOLEAN);
         return $this;
     }
@@ -280,12 +274,9 @@ class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapt
      * @param Request $request
      * @param Request $requestCopy
      */
-    protected function preparePostCopy(Request $request, Request $requestCopy)
-    {
+    protected function preparePostCopy(Request $request, Request $requestCopy) {
         $contentType = $request->getHeaders()->get('Content-Type');
-        if ($contentType instanceof ContentType
-            &&  'multipart/form-data' === $contentType->getMediaType()
-        ) {
+        if ($contentType instanceof ContentType &&  'multipart/form-data' === $contentType->getMediaType()) {
             $boundary = $contentType->getParameters()['boundary'];
             $content = '';
 
@@ -316,7 +307,7 @@ class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapt
     /**
      * @return string
      */
-    public function getTokenVersion() {
+    public function getTokenVersion(): ?string {
         return $this->tokenVersion;
     }
 
@@ -324,7 +315,7 @@ class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapt
      * @param string $tokenVersion
      * @return TokenHeaderAuthenticationAdapter
      */
-    public function setTokenVersion($tokenVersion) {
+    public function setTokenVersion(string $tokenVersion): TokenHeaderAuthenticationAdapter {
         $this->tokenVersion = $tokenVersion;
         return $this;
     }

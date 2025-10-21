@@ -2,13 +2,16 @@
 /**
  * Request file
  *
- * @copyright Copyright (c) 2016, final gene <info@final-gene.de>
- * @author    Frank Giesecke <frank.giesecke@final-gene.de>
+ * @copyright       Copyright (c) 2016, final gene <info@final-gene.de>
+ * @author          Frank Giesecke <frank.giesecke@final-gene.de>
+ *
+ * @copyright       (c)2025 Frank Emmrich IT-Consulting!
+ * @author          Frank Emmrich <kontakt@frank-emmrich.de>
+ * @link            https://www.frank-emmrich.de
  */
 
 namespace FinalGene\RestResourceAuthenticationModule\Http;
 
-use League\Uri\QueryParser;
 use Laminas\Http\PhpEnvironment\Request as BaseRequest;
 use Laminas\Stdlib\Parameters;
 
@@ -17,15 +20,14 @@ use Laminas\Stdlib\Parameters;
  *
  * @package FinalGene\RestResourceAuthenticationModule\Http
  */
-class Request extends BaseRequest
-{
-    public function __construct($allowCustomMethods = true)
-    {
+class Request extends BaseRequest {
+    /**
+     * @param bool $allowCustomMethods
+     */
+    public function __construct($allowCustomMethods = true) {
         parent::__construct($allowCustomMethods);
 
-        $parser = new QueryParser();
-        $queryParameters = $parser->parse($this->getUri()->getQuery());
-
+        $queryParameters = $this->getUri()->getQueryAsArray();
         $this->setQuery(new Parameters($queryParameters));
     }
 }
