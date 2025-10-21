@@ -2,33 +2,39 @@
 /**
  * rest-resource-authentication-module
  *
- * @copyright Copyright (c) 2016, final gene <info@final-gene.de>
- * @author    Frank Giesecke <frank.giesecke@final-gene.de>
+ * @copyright       Copyright (c) 2016, final gene <info@final-gene.de>
+ * @author          Frank Giesecke <frank.giesecke@final-gene.de>
+ *
+ * @copyright       (c)2025 Frank Emmrich IT-Consulting!
+ * @author          Frank Emmrich <kontakt@frank-emmrich.de>
+ * @link            https://www.frank-emmrich.de
  */
 
 namespace FinalGene\RestResourceAuthenticationModuleTest\Unit\Http;
 
 use FinalGene\RestResourceAuthenticationModule\Http\Request;
+use Laminas\ServiceManager\ServiceManager;
 use Laminas\Test\Util\ModuleLoader;
-use Laminas\Console\Request as ConsoleRequest;
+use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use Symfony\Component\Console\Application;
 
 /**
  * Class RequestFactoryTest
  *
  * @package FinalGene\RestResourceAuthenticationModuleTest\Unit\Http
  */
-class RequestFactoryTest extends \PHPUnit_Framework_TestCase
-{
+class RequestFactoryTest extends TestCase {
     /**
-     * @var \Laminas\ServiceManager\ServiceManager
+     * @var ServiceManager
      */
-    protected $serviceManager;
+    protected ServiceManager $serviceManager;
 
     /**
      * @inheritdoc
      */
-    public function setUp()
-    {
+    public function setUp(): void {
         /* @noinspection \PhpIncludeInspection */
         $moduleLoader = new ModuleLoader([
             'modules' => [
@@ -45,23 +51,26 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
     /**
      * Get the service manager
      *
-     * @return \Laminas\ServiceManager\ServiceManager
+     * @return ServiceManager
      */
-    protected function getServiceManager()
-    {
+    protected function getServiceManager(): ServiceManager {
         return $this->serviceManager;
     }
 
     /**
-     * @covers FinalGene\RestResourceAuthenticationModule\Http\RequestFactory::createService
-     * @uses FinalGene\RestResourceAuthenticationModule\Http\Request
-     * @uses FinalGene\RestResourceAuthenticationModule\Module
-     * @uses FinalGene\RestResourceAuthenticationModule\ServiceManager\AuthenticationServiceInitializer
+     * @covers \FinalGene\RestResourceAuthenticationModule\Http\RequestFactory::createService
+     * @uses Request
+     * @uses \FinalGene\RestResourceAuthenticationModule\Module
+     * @uses \FinalGene\RestResourceAuthenticationModule\ServiceManager\AuthenticationServiceInitializer
+     *
+     * @return void
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
-    public function testCreateService()
-    {
+    public function testCreateService() {
+        $this->getServiceManager()->get(Request::class);
         $this->assertInstanceOf(
-            ConsoleRequest::class,
+            Application::class,
             $this->getServiceManager()->get(Request::class)
         );
     }

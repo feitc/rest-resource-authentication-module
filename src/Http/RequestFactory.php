@@ -2,35 +2,35 @@
 /**
  * Request factory file
  *
- * @copyright Copyright (c) 2016, final gene <info@final-gene.de>
- * @author    Frank Giesecke <frank.giesecke@final-gene.de>
+ * @copyright       Copyright (c) 2016, final gene <info@final-gene.de>
+ * @author          Frank Giesecke <frank.giesecke@final-gene.de>
+ *
+ * @copyright       (c)2025 Frank Emmrich IT-Consulting!
+ * @author          Frank Emmrich <kontakt@frank-emmrich.de>
+ * @link            https://www.frank-emmrich.de
  */
 
 namespace FinalGene\RestResourceAuthenticationModule\Http;
 
-use Laminas\Console\Console;
-use Laminas\Console\Request as ConsoleRequest;
-use Laminas\ServiceManager\FactoryInterface;
-use Laminas\ServiceManager\ServiceLocatorInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
+use Symfony\Component\Console\Application;
 
 /**
  * Class RequestFactory
  *
  * @package Evolver\EstateModule\Http
  */
-class RequestFactory implements FactoryInterface
-{
+class RequestFactory implements FactoryInterface {
     /**
-     * Create service
-     *
-     * @param ServiceLocatorInterface $serviceLocator
-     *
-     * @return mixed
+     * @param ContainerInterface $container
+     * @param $requestedName
+     * @param array|null $options
+     * @return Request|Application
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
-    {
-        if (Console::isConsole()) {
-            return new ConsoleRequest();
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null) {
+        if ('cli' === PHP_SAPI) {
+            return new Application();
         }
 
         return new Request();

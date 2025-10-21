@@ -2,21 +2,30 @@
 /**
  * This file is part of the rest-resource-authentication-module project.
  *
- * @copyright Copyright (c) 2015, final gene <info@final-gene.de>
- * @author    Frank Giesecke <frank.giesecke@final-gene.de>
+ * @copyright       Copyright (c) 2015, final gene <info@final-gene.de>
+ * @author          Frank Giesecke <frank.giesecke@final-gene.de>
+ *
+ * @copyright       (c)2025 Frank Emmrich IT-Consulting!
+ * @author          Frank Emmrich <kontakt@frank-emmrich.de>
+ * @link            https://www.frank-emmrich.de
  */
 
 namespace FinalGene\RestResourceAuthenticationModuleTest\Unit;
 
 use FinalGene\RestResourceAuthenticationModule\Module;
+use InvalidArgumentException;
 use Laminas\ModuleManager\Feature\ConfigProviderInterface;
+use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use ReflectionException;
+use ReflectionMethod;
 
 /**
  * Class ModuleTest
  *
  * @package FinalGene\RestResourceAuthenticationModuleTest\Unit
  */
-class ModuleTest extends \PHPUnit_Framework_TestCase
+class ModuleTest extends TestCase
 {
     /**
      * Make sure module config can be serialized.
@@ -25,10 +34,9 @@ class ModuleTest extends \PHPUnit_Framework_TestCase
      * this breaks the application when zf2's config cache is enabled.
      *
      * @covers \FinalGene\RestResourceAuthenticationModule\Module::getConfig()
-     * @uses \FinalGene\RestResourceAuthenticationModule\Module::loadConfig()
+     * @uses Module::loadConfig()
      */
-    public function testModuleConfigIsSerializable()
-    {
+    public function testModuleConfigIsSerializable() {
         $module = new Module();
 
         if (!$module instanceof ConfigProviderInterface) {
@@ -41,12 +49,11 @@ class ModuleTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers \FinalGene\RestResourceAuthenticationModule\Module::getModuleDependencies()
      */
-    public function testModuleDependencies()
-    {
+    public function testModuleDependencies() {
         $module = new Module();
         $dependencies = $module->getModuleDependencies();
 
-        $this->assertInternalType('array', $dependencies);
+        $this->assertIsArray($dependencies);
 
         $this->assertContains('Laminas\ApiTools\ApiProblem', $dependencies);
         $this->assertContains('Laminas\ApiTools\Rest', $dependencies);
@@ -54,10 +61,12 @@ class ModuleTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers \FinalGene\RestResourceAuthenticationModule\Module::loadConfig()
-     * @expectedException \InvalidArgumentException
+     *
+     * @return void
+     * @throws ReflectionException
      */
-    public function testLoadConfigThrowException()
-    {
+    public function testLoadConfigThrowException() {
+        $this->expectException(InvalidArgumentException::class);
         $module = new Module();
 
         $config = $this->getMethod('loadConfig');
@@ -66,25 +75,26 @@ class ModuleTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers \FinalGene\RestResourceAuthenticationModule\Module::loadConfig()
+     *
+     * @return void
+     * @throws ReflectionException
      */
-    public function testLoadConfigReturnConfigArray()
-    {
+    public function testLoadConfigReturnConfigArray() {
         $module = new Module();
 
         $config = $this->getMethod('loadConfig');
         $config = $config->invokeArgs($module, ['tests/resources/Unit/ModuleTest/service.config.php']);
 
-        $this->assertInternalType('array', $config);
+        $this->assertIsArray($config);
     }
 
     /**
      * @param $name
-     *
-     * @return \ReflectionMethod
+     * @return ReflectionMethod
+     * @throws ReflectionException
      */
-    protected function getMethod($name)
-    {
-        $class = new \ReflectionClass(Module::class);
+    protected function getMethod($name): ReflectionMethod {
+        $class = new ReflectionClass(Module::class);
         $method = $class->getMethod($name);
         $method->setAccessible(true);
         return $method;
