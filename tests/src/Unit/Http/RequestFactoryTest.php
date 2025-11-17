@@ -18,7 +18,6 @@ use Laminas\Test\Util\ModuleLoader;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use Symfony\Component\Console\Application;
 
 /**
  * Class RequestFactoryTest
@@ -67,7 +66,7 @@ class RequestFactoryTest extends TestCase {
     public function testCreateService() {
         $this->getServiceManager()->get(Request::class);
         $this->assertInstanceOf(
-            Application::class,
+            Request::class,
             $this->getServiceManager()->get(Request::class)
         );
     }
