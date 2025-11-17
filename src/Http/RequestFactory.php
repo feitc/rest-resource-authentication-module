@@ -14,25 +14,19 @@ namespace FinalGene\RestResourceAuthenticationModule\Http;
 
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
-use Symfony\Component\Console\Application;
 
 /**
  * Class RequestFactory
- *
- * @package Evolver\EstateModule\Http
+ * @package FinalGene\RestResourceAuthenticationModule\Http
  */
 class RequestFactory implements FactoryInterface {
     /**
      * @param ContainerInterface $container
      * @param $requestedName
      * @param array|null $options
-     * @return Request|Application
+     * @return Request
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): Request|Application {
-        if ('cli' === PHP_SAPI) {
-            return new Application();
-        }
-
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): Request {
         return new Request();
     }
 }
