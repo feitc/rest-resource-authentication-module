@@ -21,13 +21,13 @@ test:composer:
     expire_in: 1 hour
 
 # run unit tests
-test:phpunit:7.4:
+test:phpunit:8.2:
   stage: test:run
   tags:
     - docker
   dependencies:
     - test:composer
-  image: finalgene/php-cli:7.4
+  image: feitc/php-cli:8.2
   variables:
     XDEBUG_ENABLE: 1
   script:
@@ -35,7 +35,7 @@ test:phpunit:7.4:
     - find src/ -name '*.php' -print0 | xargs -0 php -l
     - find tests/ -name '*.php' -print0 | xargs -0 php -l
     # run unit tests
-    - vendor/bin/phpunit --coverage-clover .report/phpunit.coverage.xml --log-junit .report/phpunit.xml --coverage-text --colors=never
+    - XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-clover .report/phpunit.coverage.xml --log-junit .report/phpunit.xml --coverage-text --colors=never
   artifacts:
     paths:
       - tests/.report/

@@ -2,8 +2,12 @@
 /**
  * Authentication service file
  *
- * @copyright Copyright (c) 2016, final gene <info@final-gene.de>
- * @author    Frank Giesecke <frank.giesecke@final-gene.de>
+ * @copyright       Copyright (c) 2016, final gene <info@final-gene.de>
+ * @author          Frank Giesecke <frank.giesecke@final-gene.de>
+ *
+ * @copyright       (c)2025 Frank Emmrich IT-Consulting!
+ * @author          Frank Emmrich <kontakt@frank-emmrich.de>
+ * @link            https://www.frank-emmrich.de
  */
 
 namespace FinalGene\RestResourceAuthenticationModule\Service;
@@ -11,6 +15,7 @@ namespace FinalGene\RestResourceAuthenticationModule\Service;
 use FinalGene\RestResourceAuthenticationModule\Exception\AuthenticationException;
 use Laminas\Authentication\Adapter\AdapterInterface;
 use Laminas\ApiTools\MvcAuth\Identity\IdentityInterface;
+use Laminas\Authentication\Adapter\Exception\ExceptionInterface;
 
 /**
  * Class AuthenticationService
@@ -22,15 +27,14 @@ class AuthenticationService
     /**
      * @var AdapterInterface
      */
-    protected $adapter;
+    protected AdapterInterface $adapter;
 
     /**
      * Get $adapter
      *
      * @return AdapterInterface
      */
-    public function getAdapter()
-    {
+    public function getAdapter(): AdapterInterface {
         return $this->adapter;
     }
 
@@ -38,8 +42,7 @@ class AuthenticationService
      * @param AdapterInterface $adapter
      * @return AuthenticationService
      */
-    public function setAdapter($adapter)
-    {
+    public function setAdapter(AdapterInterface $adapter): AuthenticationService {
         $this->adapter = $adapter;
         return $this;
     }
@@ -47,9 +50,9 @@ class AuthenticationService
     /**
      * @return IdentityInterface|null
      * @throws AuthenticationException
+     * @throws ExceptionInterface
      */
-    public function authenticate()
-    {
+    public function authenticate(): IdentityInterface|null {
         $result = $this->getAdapter()->authenticate();
 
         if (!$result->isValid()) {

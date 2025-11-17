@@ -32,7 +32,7 @@ class AuthenticationServiceInitializer implements InitializerInterface {
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function __invoke(ContainerInterface $container, $instance) {
+    public function __invoke(ContainerInterface $container, $instance): void {
         if ($instance instanceof AuthenticatedResourceListener) {
             /** @var AuthenticationService $authenticationService */
             $authenticationService = $container->get(AuthenticationService::class);

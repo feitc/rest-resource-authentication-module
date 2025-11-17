@@ -2,8 +2,12 @@
 /**
  * Abstarct header authentication adapter file
  *
- * @copyright Copyright (c) 2016, final gene <info@final-gene.de>
- * @author    Frank Giesecke <frank.giesecke@final-gene.de>
+ * @copyright       Copyright (c) 2016, final gene <info@final-gene.de>
+ * @author          Frank Giesecke <frank.giesecke@final-gene.de>
+ *
+ * @copyright       (c)2025 Frank Emmrich IT-Consulting!
+ * @author          Frank Emmrich <kontakt@frank-emmrich.de>
+ * @link            https://www.frank-emmrich.de
  */
 
 namespace FinalGene\RestResourceAuthenticationModule\Authentication\Adapter;
@@ -17,17 +21,16 @@ use Laminas\Http\Request;
  *
  * @package FinalGene\RestResourceAuthenticationModule\Authentication\Adapter
  */
-abstract class AbstractHeaderAuthenticationAdapter implements AdapterInterface
-{
-    private $request;
+abstract class AbstractHeaderAuthenticationAdapter implements AdapterInterface {
+    /**
+     * @var Request
+     */
+    private Request $request;
 
     /**
-     * Get $request
-     *
      * @return Request
      */
-    public function getRequest()
-    {
+    public function getRequest(): Request {
         return $this->request;
     }
 
@@ -35,8 +38,7 @@ abstract class AbstractHeaderAuthenticationAdapter implements AdapterInterface
      * @param Request $request
      * @return AbstractHeaderAuthenticationAdapter
      */
-    public function setRequest($request)
-    {
+    public function setRequest(Request $request): AbstractHeaderAuthenticationAdapter {
         $this->request = $request;
         return $this;
     }
@@ -46,8 +48,7 @@ abstract class AbstractHeaderAuthenticationAdapter implements AdapterInterface
      *
      * @return Result
      */
-    public function authenticate()
-    {
+    public function authenticate(): Result {
         return $this->buildErrorResult('No authentication implemented', Result::FAILURE_UNCATEGORIZED);
     }
 
@@ -59,8 +60,7 @@ abstract class AbstractHeaderAuthenticationAdapter implements AdapterInterface
      *
      * @return Result
      */
-    protected function buildErrorResult($message, $code = Result::FAILURE)
-    {
+    protected function buildErrorResult($message, int $code = Result::FAILURE): Result {
         return new Result($code, null, [$message]);
     }
 }

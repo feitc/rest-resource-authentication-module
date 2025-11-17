@@ -2,8 +2,12 @@
 /**
  * Authenticated resource listener file
  *
- * @copyright Copyright (c) 2016, final gene <info@final-gene.de>
- * @author    Frank Giesecke <frank.giesecke@final-gene.de>
+ * @copyright       Copyright (c) 2016, final gene <info@final-gene.de>
+ * @author          Frank Giesecke <frank.giesecke@final-gene.de>
+ *
+ * @copyright       (c)2025 Frank Emmrich IT-Consulting!
+ * @author          Frank Emmrich <kontakt@frank-emmrich.de>
+ * @link            https://www.frank-emmrich.de
  */
 
 namespace FinalGene\RestResourceAuthenticationModule\Rest;
@@ -11,34 +15,33 @@ namespace FinalGene\RestResourceAuthenticationModule\Rest;
 use FinalGene\RestResourceAuthenticationModule\Authentication\IdentityInterface;
 use FinalGene\RestResourceAuthenticationModule\Exception\AuthenticationException;
 use FinalGene\RestResourceAuthenticationModule\Exception\PermissionException;
-use Laminas\EventManager\EventManagerInterface;
+use FinalGene\RestResourceAuthenticationModule\Service\AuthenticationService;
 use Laminas\ApiTools\ApiProblem\ApiProblem;
 use Laminas\ApiTools\ApiProblem\ApiProblemResponse;
 use Laminas\ApiTools\Rest\AbstractResourceListener;
 use Laminas\ApiTools\Rest\ResourceEvent;
-use FinalGene\RestResourceAuthenticationModule\Service\AuthenticationService;
+use Laminas\Authentication\Adapter\Exception\ExceptionInterface;
+use Laminas\EventManager\EventManagerInterface;
 
 /**
  * Class AuthenticatedResourceListener
  *
  * @package FinalGene\RestResourceAuthenticationModule\Rest
  */
-abstract class AuthenticatedResourceListener extends AbstractResourceListener
-{
+abstract class AuthenticatedResourceListener extends AbstractResourceListener {
     /**
      * @var AuthenticationService
      */
-    protected $authenticationService;
+    protected AuthenticationService $authenticationService;
 
     /**
      * Set $authenticationService
      *
      * @param AuthenticationService $authenticationService
      *
-     * @return $this
+     * @return AuthenticatedResourceListener
      */
-    public function setAuthenticationService(AuthenticationService $authenticationService)
-    {
+    public function setAuthenticationService(AuthenticationService $authenticationService): AuthenticatedResourceListener {
         $this->authenticationService = $authenticationService;
         return $this;
     }
@@ -48,16 +51,16 @@ abstract class AuthenticatedResourceListener extends AbstractResourceListener
      *
      * @return AuthenticationService
      */
-    public function getAuthenticationService()
-    {
+    public function getAuthenticationService(): AuthenticationService {
         return $this->authenticationService;
     }
 
     /**
      * @param EventManagerInterface $events
+     * @param int $priority
+     * @return void
      */
-    public function attach(EventManagerInterface $events, $priority = 1)
-    {
+    public function attach(EventManagerInterface $events, $priority = 1): void {
         $events->attach('create', [$this, 'authenticate'], 10);
         $events->attach('delete', [$this, 'authenticate'], 10);
         $events->attach('deleteList', [$this, 'authenticate'], 10);
@@ -73,14 +76,15 @@ abstract class AuthenticatedResourceListener extends AbstractResourceListener
 
     /**
      * @param ResourceEvent $event
-     *
-     * @return null|object|ApiProblemResponse
+     * @return IdentityInterface|ApiProblemResponse|\Laminas\ApiTools\MvcAuth\Identity\IdentityInterface|mixed|null
+     * @throws ExceptionInterface
      */
-    public function authenticate(ResourceEvent $event)
-    {
+    public function authenticate(ResourceEvent $event) {
         try {
             $identity = $this->getAuthenticationService()->authenticate();
+            // 'if' wird nie ausgeführt: $identity ist Instanz von Laminas\ApiTools\MvcAuth\Identity\IdentityInterface
             if ($identity instanceof IdentityInterface) {
+                // TODO: Methode nicht implementiert
                 $identity->checkPermission($event);
             }
             return $identity;

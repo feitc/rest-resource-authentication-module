@@ -4,7 +4,7 @@
     xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
     bootstrap="tests/bootstrap.php"
     colors="true"
-    forceCoversAnnotation="true"
+    requireCoverageMetadata="true"
     beStrictAboutOutputDuringTests="true"
     beStrictAboutChangesToGlobalState="true">
     <php>
@@ -21,25 +21,15 @@
         <!-- set HOST to phpunit.local so generated links looks like http://phpunit.local/foo?bar=baz instead of http:///foo?bar=baz -->
         <server name="HTTP_HOST" value="phpunit.local"/>
     </php>
+    <source>
+        <include>
+            <directory>src</directory>
+        </include>
+    </source>
     <testsuites>
         <testsuite name="Integration tests">
             <directory>tests/src/Integration</directory>
         </testsuite>
-<!--        <testsuite name="Unit tests">-->
-<!--            <directory>tests/src/Unit/Authentication</directory>-->
-<!--        </testsuite>-->
-<!--        <testsuite name="Unit tests">-->
-<!--            <directory>tests/src/Unit/Exception</directory>-->
-<!--        </testsuite>-->
-<!--        <testsuite name="Unit tests">-->
-<!--            <directory>tests/src/Unit/Http</directory>-->
-<!--        </testsuite>-->
-<!--        <testsuite name="Unit tests">-->
-<!--            <directory>tests/src/Unit/Rest</directory>-->
-<!--        </testsuite>-->
-<!--        <testsuite name="Unit tests">-->
-<!--            <directory>tests/src/Unit/Service</directory>-->
-<!--        </testsuite>-->
         <testsuite name="Unit tests">
             <directory>tests/src/Unit</directory>
         </testsuite>

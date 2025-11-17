@@ -17,26 +17,17 @@
         }
     ],
     "require": {
-        "php": "^7.4",
-        "laminas-api-tools/api-tools-api-problem": "^1.5",
-        "laminas-api-tools/api-tools-rest": "^1.7",
-        "laminas/laminas-config": "^3.7",
-        "laminas/laminas-dependency-plugin": "^2.4",
-        "laminas/laminas-modulemanager": "^2.12",
-        "symfony/console": "^5.4"
+        "php": "^8.2",
+        "laminas-api-tools/api-tools-api-problem": "^1.6",
+        "laminas-api-tools/api-tools-rest": "^1.8",
+        "laminas/laminas-modulemanager": "^2.19",
+        "laminas/laminas-stdlib": "^3.21",
+        "symfony/console": "^7.3"
     },
     "require-dev": {
-        "laminas/laminas-filter": "^2.22.0",
-        "laminas/laminas-form": "^3.4.0",
-        "laminas/laminas-i18n": "^2.14.0",
-        "laminas/laminas-inputfilter": "^2.19.1",
-        "laminas/laminas-log": "^2.15.0",
-        "laminas/laminas-serializer": "^2.13.0",
-        "laminas/laminas-stdlib": "^3.13.0",
-        "laminas/laminas-test": "^4.3.0",
-        "laminas/laminas-validator": "^2.16.0",
+        "laminas/laminas-test": "^4.12",
         "phpspec/prophecy-phpunit": "^2.4",
-        "phpunit/phpunit": "^9.5.13"
+        "phpunit/phpunit": "^11.5"
     },
     "autoload": {
         "psr-4": {
@@ -65,7 +56,7 @@
             "laminas/laminas-dependency-plugin": true
         },
         "platform": {
-            "php": "7.4.33",
+            "php": "8.2.29",
             "ext-intl": "0"
         }
     }

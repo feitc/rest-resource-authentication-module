@@ -22,6 +22,7 @@ use Laminas\Http\Header\ContentType;
 use Laminas\Http\Header\HeaderInterface;
 use Laminas\Http\Headers;
 use Laminas\Http\Request;
+use PHPUnit\Framework\MockObject\Rule\InvokedCount as InvokedCountMatcher;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use ReflectionClass;
@@ -58,19 +59,19 @@ class TokenHeaderAuthenticationAdapterTest extends TestCase {
     /**
      * @return array[]
      */
-    public function dataProviderForTestGetHmac(): array {
+    public static function dataProviderForTestGetHmac(): array {
         return [
             'Method GET' => [
                 Request::METHOD_GET,
-                $this->never(),
+                new InvokedCountMatcher(0)
             ],
             'Method POST' => [
                 Request::METHOD_POST,
-                $this->once(),
+                new InvokedCountMatcher(1)
             ],
             'Method PUT' => [
                 Request::METHOD_PUT,
-                $this->never(),
+                new InvokedCountMatcher(0)
             ],
         ];
     }
@@ -188,6 +189,7 @@ class TokenHeaderAuthenticationAdapterTest extends TestCase {
 
         $extractPublicKey = $this->getMethod('extractPublicKey');
         $adapter = new TokenHeaderAuthenticationAdapter();
+        $adapter->setTokenVersion('v1');
         $extractPublicKey->invokeArgs($adapter, [$authorization]);
     }
 
@@ -198,9 +200,7 @@ class TokenHeaderAuthenticationAdapterTest extends TestCase {
      */
     private function getMethod($methodName): ReflectionMethod {
         $reflection = new ReflectionClass(TokenHeaderAuthenticationAdapter::class);
-        $method = $reflection->getMethod($methodName);
-        $method->setAccessible(true);
-        return $method;
+        return $reflection->getMethod($methodName);
     }
 
     /**
@@ -286,7 +286,6 @@ class TokenHeaderAuthenticationAdapterTest extends TestCase {
             ->willReturn(self::SIGNATURE_STRING);
 
         $result = $adapter->authenticate();
-        $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::SUCCESS, $result->getCode());
         $this->assertEquals($identity, $result->getIdentity());
     }
@@ -341,7 +340,6 @@ class TokenHeaderAuthenticationAdapterTest extends TestCase {
 
         $header = $this->createMock(HeaderInterface::class);
         $header
-            ->expects($this->once())
             ->method('getFieldValue')
             ->willReturn($authorization);
 
@@ -352,7 +350,6 @@ class TokenHeaderAuthenticationAdapterTest extends TestCase {
             ->with('Authorization')
             ->willReturn(true);
         $headers
-            ->expects($this->once())
             ->method('get')
             ->with('Authorization')
             ->willReturn($header);
@@ -370,23 +367,21 @@ class TokenHeaderAuthenticationAdapterTest extends TestCase {
         $adapter = $this
             ->getMockBuilder(TokenHeaderAuthenticationAdapter::class)
             ->onlyMethods([
-                    'getRequest',
-                    'extractPublicKey',
+                'getRequest',
+                'extractPublicKey',
+                'authenticate',
             ])
             ->getMock();
         $adapter
-            ->expects($this->once())
             ->method('getRequest')
             ->willReturn($request);
 
         $result = $adapter->authenticate();
-        $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE, $result->getCode());
     }
 
     /**
      * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::authenticate
-     * @uses \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter::buildErrorResult
      *
      * @return void
      * @throws TokenException
@@ -436,13 +431,11 @@ class TokenHeaderAuthenticationAdapterTest extends TestCase {
         /** @var TokenHeaderAuthenticationAdapter $adapter */
 
         $result = $adapter->authenticate();
-        $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_IDENTITY_NOT_FOUND, $result->getCode());
     }
 
     /**
      * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::authenticate
-     * @uses \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter::buildErrorResult
      *
      * @return void
      * @throws TokenException
@@ -496,14 +489,11 @@ class TokenHeaderAuthenticationAdapterTest extends TestCase {
             ->willThrowException(new TokenException('Signature not found', Result::FAILURE_CREDENTIAL_INVALID));
 
         $result = $adapter->authenticate();
-        $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_CREDENTIAL_INVALID, $result->getCode());
     }
 
     /**
      * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::authenticate
-     * @uses \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter::buildErrorResult
-     * @uses IdentityNotFoundException
      *
      * @return void
      * @throws TokenException
@@ -566,15 +556,12 @@ class TokenHeaderAuthenticationAdapterTest extends TestCase {
             ->method('getIdentityService')
             ->willReturn($identityService);
 
-        $result = $adapter->authenticate();
-        $this->assertInstanceOf(Result::class, $result);
-        $this->assertEquals(Result::FAILURE_IDENTITY_NOT_FOUND, $result->getCode());
+        $this->expectException(IdentityNotFoundException::class);
+        $adapter->authenticate();
     }
 
     /**
      * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\TokenHeaderAuthenticationAdapter::authenticate
-     * @uses TokenHeaderAuthenticationAdapter::isDebugLogging
-     * @uses \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter::buildErrorResult
      *
      * @return void
      * @throws TokenException
@@ -654,7 +641,6 @@ class TokenHeaderAuthenticationAdapterTest extends TestCase {
         /** @var TokenHeaderAuthenticationAdapter $adapter */
 
         $result = $adapter->authenticate();
-        $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_CREDENTIAL_INVALID, $result->getCode());
     }
 
@@ -673,7 +659,7 @@ class TokenHeaderAuthenticationAdapterTest extends TestCase {
     /**
      * @return array[]
      */
-    public function dataProviderForTestPreparePostCopy(): array {
+    public static function dataProviderForTestPreparePostCopy(): array {
         return [
             'unknown content type' => [
                 null,
@@ -764,13 +750,13 @@ class TokenHeaderAuthenticationAdapterTest extends TestCase {
      *
      * @param $contentType
      * @param $callExpectation
-     * @param $expectedContent
-     * @param $postData
-     * @param $fileData
+     * @param string $expectedContent
+     * @param array $postData
+     * @param array $fileData
      * @return void
      * @throws ReflectionException
      */
-    public function testPreparePostCopy($contentType, $callExpectation, $expectedContent = '', $postData = [], $fileData = []) {
+    public function testPreparePostCopy($contentType, $callExpectation, string $expectedContent = '', array $postData = [], array $fileData = []) {
         $headers = $this->prophesize(Headers::class);
         $headers->get('Content-Type')
             ->shouldBeCalled()

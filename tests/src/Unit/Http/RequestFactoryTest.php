@@ -58,10 +58,7 @@ class RequestFactoryTest extends TestCase {
     }
 
     /**
-     * @covers \FinalGene\RestResourceAuthenticationModule\Http\RequestFactory::createService
-     * @uses Request
-     * @uses \FinalGene\RestResourceAuthenticationModule\Module
-     * @uses \FinalGene\RestResourceAuthenticationModule\ServiceManager\AuthenticationServiceInitializer
+     * @covers \FinalGene\RestResourceAuthenticationModule\Http\RequestFactory::__invoke
      *
      * @return void
      * @throws ContainerExceptionInterface

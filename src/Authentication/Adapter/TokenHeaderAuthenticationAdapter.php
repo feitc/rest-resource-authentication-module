@@ -11,7 +11,6 @@
 
 namespace FinalGene\RestResourceAuthenticationModule\Authentication\Adapter;
 
-use FinalGene\RestResourceAuthenticationModule\Exception\IdentityNotFoundException;
 use FinalGene\RestResourceAuthenticationModule\Exception\TokenException;
 use FinalGene\RestResourceAuthenticationModule\Service\IdentityServiceInterface;
 use Laminas\Authentication\Result;
@@ -23,8 +22,7 @@ use Laminas\Http\Request;
  *
  * @package FinalGene\RestResourceAuthenticationModule\Authentication\Adapter
  */
-class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapter
-{
+class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapter {
     const AUTH_HEADER = 'Authorization';
 
     // Token including the header and the content (body) of the request
@@ -44,14 +42,14 @@ class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapt
     /**
      * @var bool
      */
-    private $debugLogging = false;
+    private bool $debugLogging = false;
 
     /**
      * Version of the authentication token ('v1' or 'v2')
      *
      * @var string
      */
-    private $tokenVersion;
+    private string $tokenVersion;
 
     /**
      * Get $identityService
@@ -118,8 +116,6 @@ class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapt
         } catch (TokenException $e) {
             return $this->buildErrorResult($e->getMessage(), $e->getCode());
 
-        } catch (IdentityNotFoundException $e) {
-            return $this->buildErrorResult($e->getMessage(), Result::FAILURE_IDENTITY_NOT_FOUND);
         }
 
         $hmac = $this->getHmac($request, $identity->getSecret());
@@ -273,8 +269,9 @@ class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapt
     /**
      * @param Request $request
      * @param Request $requestCopy
+     * @return void
      */
-    protected function preparePostCopy(Request $request, Request $requestCopy) {
+    protected function preparePostCopy(Request $request, Request $requestCopy): void {
         $contentType = $request->getHeaders()->get('Content-Type');
         if ($contentType instanceof ContentType &&  'multipart/form-data' === $contentType->getMediaType()) {
             $boundary = $contentType->getParameters()['boundary'];
@@ -305,7 +302,7 @@ class TokenHeaderAuthenticationAdapter extends AbstractHeaderAuthenticationAdapt
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getTokenVersion(): ?string {
         return $this->tokenVersion;

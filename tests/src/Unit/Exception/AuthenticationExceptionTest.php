@@ -23,7 +23,6 @@ use PHPUnit\Framework\TestCase;
 class AuthenticationExceptionTest extends TestCase {
     /**
      * @covers \FinalGene\RestResourceAuthenticationModule\Exception\AuthenticationException::setAuthenticationMessages
-     * @uses AuthenticationException::__construct
      */
     public function testSetAndGetAuthenticationMessages() {
         $exception = new AuthenticationException();
