@@ -41,7 +41,6 @@ class AbstractHeaderAuthenticationAdapterTest extends TestCase {
 
     /**
      * @covers \FinalGene\RestResourceAuthenticationModule\Authentication\Adapter\AbstractHeaderAuthenticationAdapter::authenticate
-     * @uses AbstractHeaderAuthenticationAdapter::buildErrorResult
      */
     public function testAuthenticate() {
         $resultMock = $this->getMockBuilder(Result::class)
@@ -68,7 +67,6 @@ class AbstractHeaderAuthenticationAdapterTest extends TestCase {
         /** @var AbstractHeaderAuthenticationAdapter $adapter */
 
         $result = $adapter->authenticate();
-        $this->assertInstanceOf(Result::class, $result);
         $this->assertEquals(Result::FAILURE_UNCATEGORIZED, $result->getCode());
     }
 
@@ -81,7 +79,6 @@ class AbstractHeaderAuthenticationAdapterTest extends TestCase {
     public function testBuildErrorResult() {
         $reflection = new ReflectionClass(AbstractHeaderAuthenticationAdapter::class);
         $buildErrorResult = $reflection->getMethod('buildErrorResult');
-        $buildErrorResult->setAccessible(true);
 
         $adapter = $this->getMockForAbstractClass(AbstractHeaderAuthenticationAdapter::class);
         $result = $buildErrorResult->invokeArgs($adapter, ['']);

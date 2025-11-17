@@ -28,7 +28,7 @@ class RequestFactory implements FactoryInterface {
      * @param array|null $options
      * @return Request|Application
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null) {
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): Request|Application {
         if ('cli' === PHP_SAPI) {
             return new Application();
         }

@@ -14,7 +14,6 @@ namespace FinalGene\RestResourceAuthenticationModuleTest\Unit;
 
 use FinalGene\RestResourceAuthenticationModule\Module;
 use InvalidArgumentException;
-use Laminas\ModuleManager\Feature\ConfigProviderInterface;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionException;
@@ -25,8 +24,7 @@ use ReflectionMethod;
  *
  * @package FinalGene\RestResourceAuthenticationModuleTest\Unit
  */
-class ModuleTest extends TestCase
-{
+class ModuleTest extends TestCase {
     /**
      * Make sure module config can be serialized.
      *
@@ -34,14 +32,9 @@ class ModuleTest extends TestCase
      * this breaks the application when zf2's config cache is enabled.
      *
      * @covers \FinalGene\RestResourceAuthenticationModule\Module::getConfig()
-     * @uses Module::loadConfig()
      */
     public function testModuleConfigIsSerializable() {
         $module = new Module();
-
-        if (!$module instanceof ConfigProviderInterface) {
-            $this->markTestSkipped('Module does not provide config');
-        }
 
         $this->assertEquals($module->getConfig(), unserialize(serialize($module->getConfig())));
     }
@@ -95,8 +88,6 @@ class ModuleTest extends TestCase
      */
     protected function getMethod($name): ReflectionMethod {
         $class = new ReflectionClass(Module::class);
-        $method = $class->getMethod($name);
-        $method->setAccessible(true);
-        return $method;
+        return $class->getMethod($name);
     }
 }

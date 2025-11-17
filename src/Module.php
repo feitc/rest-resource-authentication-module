@@ -23,9 +23,9 @@ use InvalidArgumentException;
  */
 class Module implements ConfigProviderInterface, DependencyIndicatorInterface {
     /**
-     * @inheritdoc
+     * @return array
      */
-    public function getConfig() {
+    public function getConfig(): array {
         $config = [];
         $configFiles = [
             'config/service.config.php',

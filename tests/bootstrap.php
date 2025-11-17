@@ -2,19 +2,22 @@
 /**
  * PHPUnit bootstrapping file
  *
- * @copyright Copyright (c) 2015, final gene <info@final-gene.de>
- * @author    Frank Giesecke <frank.giesecke@final-gene.de>
+ * @copyright       Copyright (c) 2015, final gene <info@final-gene.de>
+ * @author          Frank Giesecke <frank.giesecke@final-gene.de>
+ *
+ * @copyright       (c)2025 Frank Emmrich IT-Consulting!
+ * @author          Frank Emmrich <kontakt@frank-emmrich.de>
+ * @link            https://www.frank-emmrich.de
  */
 
 /**
  * Prevent polluting $GLOBALS
  * Try to find init_application file to run tests in an application
  */
-function findInitApplication()
-{
-    $path = new \SplFileInfo(__DIR__);
+function findInitApplication() {
+    $path = new SplFileInfo(__DIR__);
     do {
-        $intiFile = new \SplFileInfo($path . '/init_application.php');
+        $intiFile = new SplFileInfo($path . '/init_application.php');
         if ($intiFile->isReadable()) {
             /** @noinspection \PhpIncludeInspection */
             return require $intiFile->getPathname();
@@ -26,7 +29,7 @@ function findInitApplication()
     return false;
 }
 
-if (false == findInitApplication()) {
+if (!findInitApplication()) {
     error_reporting(-1);
 
     ini_set('default_charset', 'utf-8');

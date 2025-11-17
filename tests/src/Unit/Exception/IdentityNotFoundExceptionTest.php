@@ -23,7 +23,6 @@ use PHPUnit\Framework\TestCase;
 class IdentityNotFoundExceptionTest extends TestCase {
     /**
      * @covers \FinalGene\RestResourceAuthenticationModule\Exception\IdentityNotFoundException::__construct
-     * @uses \Exception
      */
     public function testConstructor() {
         $exception = new IdentityNotFoundException();

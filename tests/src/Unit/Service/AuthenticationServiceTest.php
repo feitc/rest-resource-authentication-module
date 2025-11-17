@@ -16,8 +16,11 @@ use FinalGene\RestResourceAuthenticationModule\Authentication\IdentityInterface;
 use FinalGene\RestResourceAuthenticationModule\Exception\AuthenticationException;
 use FinalGene\RestResourceAuthenticationModule\Service\AuthenticationService;
 use Laminas\Authentication\Adapter\AdapterInterface;
+use Laminas\Authentication\Adapter\Exception\ExceptionInterface;
 use Laminas\Authentication\Result;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
+use Laminas\ApiTools\MvcAuth\Identity\IdentityInterface as LaminasIdentityInterface;
 
 /**
  * Class AuthenticationServiceTest
@@ -43,9 +46,11 @@ class AuthenticationServiceTest extends TestCase {
      *
      * @return void
      * @throws AuthenticationException
+     * @throws ExceptionInterface
+     * @throws Exception
      */
     public function testSuccessfulAuthentication() {
-        $identity = $this->createMock(IdentityInterface::class);
+        $identity = $this->createMock(LaminasIdentityInterface::class);
 
         $result = $this->createMock(Result::class);
         $result
@@ -72,15 +77,16 @@ class AuthenticationServiceTest extends TestCase {
             ->method('getAdapter')
             ->willReturn($adapter);
 
-        $this->assertInstanceOf(IdentityInterface::class, $service->authenticate());
+        $this->assertInstanceOf(LaminasIdentityInterface::class, $service->authenticate());
     }
 
     /**
      * @covers \FinalGene\RestResourceAuthenticationModule\Service\AuthenticationService::authenticate
-     * @uses AuthenticationException
      *
      * @return void
      * @throws AuthenticationException
+     * @throws ExceptionInterface
+     * @throws Exception
      */
     public function testAuthenticationWillThrowException() {
         $this->expectException(AuthenticationException::class);
