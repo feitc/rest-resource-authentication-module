@@ -5,4 +5,5 @@
 /.gitlab-ci.yml           export-ignore
 /composer.lock            export-ignore
 /.idea/                   export-ignore
+/sonar-project.properties export-ignore
 /phpunit.xml.dist         export-ignore
