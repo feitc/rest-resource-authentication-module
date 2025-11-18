@@ -52,7 +52,7 @@ class AuthenticationService
      * @throws AuthenticationException
      * @throws ExceptionInterface
      */
-    public function authenticate(): IdentityInterface|null {
+    public function authenticate() {
         $result = $this->getAdapter()->authenticate();
 
         if (!$result->isValid()) {
